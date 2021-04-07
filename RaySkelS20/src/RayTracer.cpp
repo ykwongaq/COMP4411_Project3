@@ -30,7 +30,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 	if( scene->intersect( r, i ) ) {
 		// YOUR CODE HERE
 
-		// An intersection occured!  We've got work to do.  For now,
+		// An intersection occurred!  We've got work to do.  For now,
 		// this code gets the material for the surface that was intersected,
 		// and asks that material to provide a color for the ray.  
 
@@ -46,7 +46,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		// No intersection.  This ray travels to infinity, so we color
 		// it according to the background color, which in this (simple) case
 		// is just black.
-
+		//cout << "Not Intersecting" << endl;
 		return vec3f( 0.0, 0.0, 0.0 );
 	}
 }

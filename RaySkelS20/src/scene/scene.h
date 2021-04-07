@@ -52,6 +52,10 @@ public:
 	// closest to the origin in tMin and the "t" value of the far intersection
 	// in tMax and return true, else return false.
 	bool intersect(const ray& r, double& tMin, double& tMax) const;
+
+	// Modified verion of bool intersect(const ray& r, double& tMin, double& tMax) const
+	// This version will calculate the normal vector of intersection point
+	bool intersect(const ray &r, double &tMin, double &tMax, vec3f &normal) const;
 };
 
 class TransformNode

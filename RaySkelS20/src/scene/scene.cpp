@@ -73,6 +73,58 @@ bool BoundingBox::intersect(const ray& r, double& tMin, double& tMax) const
 	return true; // it made it past all 3 axes.
 }
 
+bool BoundingBox::intersect(const ray &r, double &tMin, double &tMax, vec3f &normal) const {
+	vec3f R0 = r.getPosition();
+	vec3f Rd = r.getDirection();
+
+	tMin = -1.0e308; // 1.0e308 is close to infinity... close enough for us!
+	tMax = 1.0e308;
+	double ttemp;
+
+	for (int currentaxis = 0; currentaxis < 3; currentaxis++) 	{
+		double vd = Rd[currentaxis];
+
+		// if the ray is parallel to the face's plane (=0.0)
+		if (vd == 0.0)
+			continue;
+
+		double v1 = min[currentaxis] - R0[currentaxis];
+		double v2 = max[currentaxis] - R0[currentaxis];
+
+		// two slab intersections
+		double t1 = v1 / vd;
+		double t2 = v2 / vd;
+
+		if (t1 > t2) { // swap t1 & t2
+			ttemp = t1;
+			t1 = t2;
+			t2 = ttemp;
+		}
+
+		if (t1 > tMin) {
+			tMin = t1;
+			
+			// Set the normal vector
+			if (currentaxis == 0) {
+				normal = vec3f(Rd[0] < 0.0 ? 1.0 : -1.0, 0.0, 0.0);
+			} else if (currentaxis == 1) {
+				normal = vec3f(0.0, Rd[1] < 0.0 ? 1.0: -1.0, 0.0);
+			} else if (currentaxis == 2) {
+				normal = vec3f(0.0, 0.0, Rd[2] < 0.0 ? 1.0 : -1.0);
+			}
+			
+		}
+		if (t2 < tMax)
+			tMax = t2;
+
+		if (tMin > tMax) // box is missed
+			return false;
+		if (tMax < 0.0) // box is behind ray
+			return false;
+	}
+	return true; // it made it past all 3 axes.
+}
+
 
 bool Geometry::intersect(const ray&r, isect&i) const
 {

@@ -21,6 +21,10 @@ public:
 		localbounds.min = vec3f(-0.5, -0.5, -0.5);
         return localbounds;
     }
+
+private:
+
+	BoundingBox getLocalBoundingBox() const;
 };
 
 #endif // __BOX_H__
