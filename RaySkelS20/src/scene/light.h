@@ -47,6 +47,8 @@ public:
 
 protected:
 	vec3f position;
+	double constant_attenuation_coeff, linear_attenuation_coeff, quadratic_attenuation_coeff;
+	double coneangle, focus_constant;
 };
 
 #endif // __LIGHT_H__

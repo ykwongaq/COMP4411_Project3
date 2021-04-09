@@ -1,6 +1,24 @@
 #include <cmath>
 
 #include "light.h"
+//#include "vecmath.h"
+
+float MIN(float a, float b) 
+{
+	if (a < b) {
+		return a;
+	}
+	return b;
+
+}
+float MAX(float a, float b)
+{
+	if (a > b) {
+		return a;
+	}
+	return b;
+
+}
 
 double DirectionalLight::distanceAttenuation( const vec3f& P ) const
 {
@@ -34,7 +52,10 @@ double PointLight::distanceAttenuation( const vec3f& P ) const
 	// You'll need to modify this method to attenuate the intensity 
 	// of the light based on the distance between the source and the 
 	// point P.  For now, I assume no attenuation and just return 1.0
-	return 1.0;
+	//return 1.0;
+	// calculate the distance from the source to the point P
+	double d = P.distanceTo(position);
+	return MIN(1, 1.0 / (constant_attenuation_coeff + linear_attenuation_coeff * d + quadratic_attenuation_coeff * d * d));
 }
 
 vec3f PointLight::getColor( const vec3f& P ) const
