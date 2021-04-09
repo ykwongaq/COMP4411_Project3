@@ -213,8 +213,9 @@ Fl_Menu_Item TraceUI::menuitems[] = {
 TraceUI::TraceUI() {
 	// init.
 	m_nDepth = 0;
-	m_nSize = 150;
-	m_mainWindow = new Fl_Window(100, 40, 320, 100, "Ray <Not Loaded>");
+	//change the size of the m_n from 150 to 300
+	m_nSize = 300;
+	m_mainWindow = new Fl_Window(100, 40, 320, 500, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
 		m_menubar = new Fl_Menu_Bar(0, 0, 320, 25);
@@ -246,6 +247,78 @@ TraceUI::TraceUI() {
 		m_sizeSlider->align(FL_ALIGN_RIGHT);
 		m_sizeSlider->callback(cb_sizeSlides);
 
+
+		// install slider atteunation  constant
+		m_auteunationConstantSlider = new Fl_Value_Slider(10, 80, 180, 20, "Auteunation Constant");
+		m_auteunationConstantSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_auteunationConstantSlider->type(FL_HOR_NICE_SLIDER);
+		m_auteunationConstantSlider->labelfont(FL_COURIER);
+		m_auteunationConstantSlider->labelsize(12);
+		m_auteunationConstantSlider->minimum(0.0);
+		m_auteunationConstantSlider->maximum(1.0);
+		m_auteunationConstantSlider->step(0.01);
+		m_auteunationConstantSlider->value(m_nAtteunConstant);
+		m_auteunationConstantSlider->align(FL_ALIGN_RIGHT);
+		m_auteunationConstantSlider->callback(cb_sizeSlides);
+
+		// install slider atteunation  linear
+		m_auteunationLinearSlider = new Fl_Value_Slider(10, 105, 180, 20, "Auteunation Linear");
+		m_auteunationLinearSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_auteunationLinearSlider->type(FL_HOR_NICE_SLIDER);
+		m_auteunationLinearSlider->labelfont(FL_COURIER);
+		m_auteunationLinearSlider->labelsize(12);
+		m_auteunationLinearSlider->minimum(0.0);
+		m_auteunationLinearSlider->maximum(1.0);
+		m_auteunationLinearSlider->step(0.01);
+		m_auteunationLinearSlider->value(m_nAtteunLinear);
+		m_auteunationLinearSlider->align(FL_ALIGN_RIGHT);
+		m_auteunationLinearSlider->callback(cb_sizeSlides);
+
+		// install slider atteunation  quadric
+		m_auteunationQuadricSlider = new Fl_Value_Slider(10, 130, 180, 20, "Auteunation Quadric");
+		m_auteunationQuadricSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_auteunationQuadricSlider->type(FL_HOR_NICE_SLIDER);
+		m_auteunationQuadricSlider->labelfont(FL_COURIER);
+		m_auteunationQuadricSlider->labelsize(12);
+		m_auteunationQuadricSlider->minimum(0.0);
+		m_auteunationQuadricSlider->maximum(1.0);
+		m_auteunationQuadricSlider->step(0.01);
+		m_auteunationQuadricSlider->value(m_nAtteunQuadric);
+		m_auteunationQuadricSlider->align(FL_ALIGN_RIGHT);
+		m_auteunationQuadricSlider->callback(cb_sizeSlides);
+
+
+		// install slider ambient light 
+		m_auteunationQuadricSlider = new Fl_Value_Slider(10, 155, 180, 20, "Ambient Light");
+		m_auteunationQuadricSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_auteunationQuadricSlider->type(FL_HOR_NICE_SLIDER);
+		m_auteunationQuadricSlider->labelfont(FL_COURIER);
+		m_auteunationQuadricSlider->labelsize(12);
+		m_auteunationQuadricSlider->minimum(0.0);
+		m_auteunationQuadricSlider->maximum(1.0);
+		m_auteunationQuadricSlider->step(0.01);
+		m_auteunationQuadricSlider->value(m_nAmbientLight);
+		m_auteunationQuadricSlider->align(FL_ALIGN_RIGHT);
+		m_auteunationQuadricSlider->callback(cb_sizeSlides);
+
+
+		// install slider theshold
+		m_thresholdSlider = new Fl_Value_Slider(10, 180, 180, 20, "Threshold");
+		m_thresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_thresholdSlider->type(FL_HOR_NICE_SLIDER);
+		m_thresholdSlider->labelfont(FL_COURIER);
+		m_thresholdSlider->labelsize(12);
+		m_thresholdSlider->minimum(0.0);
+		m_thresholdSlider->maximum(1.0);
+		m_thresholdSlider->step(0.01);
+		m_thresholdSlider->value(m_nThreshold);
+		m_thresholdSlider->align(FL_ALIGN_RIGHT);
+		m_thresholdSlider->callback(cb_sizeSlides);
+
+
+
+
+		//for button
 		m_renderButton = new Fl_Button(240, 27, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));
 		m_renderButton->callback(cb_render);
