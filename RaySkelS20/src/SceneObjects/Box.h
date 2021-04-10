@@ -23,7 +23,6 @@ public:
     }
 
 private:
-
 	BoundingBox getLocalBoundingBox() const;
 };
 

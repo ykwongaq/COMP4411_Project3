@@ -7,6 +7,7 @@
 #ifndef __RAY_H__
 #define __RAY_H__
 
+#include <stack>
 #include "../vecmath/vecmath.h"
 #include "material.h"
 
@@ -32,9 +33,13 @@ public:
 	vec3f getPosition() const { return p; }
 	vec3f getDirection() const { return d; }
 
+    const Material *getPrevMaterial() const;
+    void rememberMaterial(const Material *material);
+
 protected:
 	vec3f p;
 	vec3f d;
+    stack<const Material *> material_stack;
 };
 
 // The description of an intersection point.

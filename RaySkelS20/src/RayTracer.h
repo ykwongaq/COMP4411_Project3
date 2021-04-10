@@ -13,7 +13,7 @@ public:
     ~RayTracer();
 
     vec3f trace( Scene *scene, double x, double y );
-	vec3f traceRay( Scene *scene, const ray& r, const vec3f& thresh, int depth );
+	vec3f traceRay( Scene *scene, ray& r, const vec3f& thresh, int depth );
 
 
 	void getBuffer( unsigned char *&buf, int &w, int &h );
@@ -33,6 +33,11 @@ private:
 	Scene *scene;
 
 	bool m_bSceneLoaded;
+
+	vec3f getReflectedDir(const vec3f& L, const vec3f&N) const;
+	vec3f getRefrationDir(const vec3f &L, const vec3f &N, const double &n_i, const double &n_t) const;
+	bool  isEntering(const vec3f &L, const vec3f &N) const;
+	bool  TIR(const vec3f &L, const vec3f &N, const double &n_i, const double &n_t) const;
 };
 
 #endif // __RAYTRACER_H__

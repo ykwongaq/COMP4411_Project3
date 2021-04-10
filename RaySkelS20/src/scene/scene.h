@@ -266,12 +266,12 @@ public:
 	void add( Light* light )
 	{ lights.push_back( light ); }
 
+
 	bool intersect( const ray& r, isect& i ) const;
 	void initScene();
 
 	list<Light*>::const_iterator beginLights() const { return lights.begin(); }
 	list<Light*>::const_iterator endLights() const { return lights.end(); }
-        
 	Camera *getCamera() { return &camera; }
 
 	
