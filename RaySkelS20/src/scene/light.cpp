@@ -1,24 +1,9 @@
 #include <cmath>
 
 #include "light.h"
-//#include "vecmath.h"
+#include "../ui/TraceUI.h"
 
-float MIN(float a, float b) 
-{
-	if (a < b) {
-		return a;
-	}
-	return b;
-
-}
-float MAX(float a, float b)
-{
-	if (a > b) {
-		return a;
-	}
-	return b;
-
-}
+extern TraceUI *traceUI;
 
 double DirectionalLight::distanceAttenuation( const vec3f& P ) const
 {
@@ -54,15 +39,14 @@ double PointLight::distanceAttenuation( const vec3f& P ) const
 	// point P.  For now, I assume no attenuation and just return 1.0
 	
 	// remember to get the coef form the ui
-	const double a = 0.25;
-	const double b = 0.25;
-	const double c = 0.5;
+	const double a = this->const_coeff;
+	const double b = this->linear_coeff;
+	const double c = this->quad_coeff;
 
 	// Get the distance between intersection point and the light source
-	const double d2 = (P - this->position).length_squared();
-	const double d	= sqrt(d2);
+	const double dis = P.distanceTo(position);
 
-	double divisor		= a + b * d + c * d2;
+	double divisor		= a + b * dis + c * dis * dis;
 	if (divisor == 0) return 1;
 	double dis_atten	= 1 / divisor;
 
@@ -81,7 +65,7 @@ vec3f PointLight::getDirection( const vec3f& P ) const
 }
 
 PointLight::PointLight(Scene *scene, const vec3f &pos, const vec3f &color) 
-: Light(scene, color), position(pos), const_coeff(0.25), linear_coeff(0.25), quad_coeff(0.5)
+: Light(scene, color), position(pos), const_coeff(0), linear_coeff(0), quad_coeff(0)
 {
 
 }

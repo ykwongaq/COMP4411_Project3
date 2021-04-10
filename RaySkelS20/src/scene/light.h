@@ -48,7 +48,7 @@ public:
 
 protected:
 	vec3f position;
-	double const_coeff, linear_coeff, quad_coeff
+	double const_coeff, linear_coeff, quad_coeff;
 };
 
 // Add ambient light

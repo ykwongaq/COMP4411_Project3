@@ -195,6 +195,26 @@ int TraceUI::getDepth()
 	return m_nDepth;
 }
 
+float TraceUI::getConstantAtten() const {
+	return this->m_nAtteunConstant;
+}
+
+float TraceUI::getLinearAtten() const {
+	return this->m_nAtteunLinear;
+}
+
+float TraceUI::getQuadAtten() const {
+	return this->m_nAtteunQuadric;
+}
+
+float TraceUI::getAmbientLight() const {
+	return this->m_nAmbientLight;
+}
+
+float TraceUI::getTreshold() const {
+	return this->m_nThreshold;
+}
+
 // menu definition
 Fl_Menu_Item TraceUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
@@ -215,6 +235,14 @@ TraceUI::TraceUI() {
 	m_nDepth = 0;
 	//change the size of the m_n from 150 to 300
 	m_nSize = 300;
+
+	// Initialization
+	this->m_nAtteunConstant	= 0.25f;
+	this->m_nAtteunLinear	= 0.25f;
+	this->m_nAtteunQuadric	= 0.5f;
+	this->m_nAmbientLight	= 0.0f;
+	this->m_nThreshold		= 0.0f;
+
 	m_mainWindow = new Fl_Window(100, 40, 320, 500, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
@@ -314,8 +342,6 @@ TraceUI::TraceUI() {
 		m_thresholdSlider->value(m_nThreshold);
 		m_thresholdSlider->align(FL_ALIGN_RIGHT);
 		m_thresholdSlider->callback(cb_sizeSlides);
-
-
 
 
 		//for button

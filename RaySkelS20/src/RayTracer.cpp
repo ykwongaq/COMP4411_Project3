@@ -9,6 +9,9 @@
 #include "scene/ray.h"
 #include "fileio/read.h"
 #include "fileio/parse.h"
+#include "ui/TraceUI.h"
+
+extern TraceUI *traceUI;
 
 // Trace a top-level ray through normalized window coordinates (x,y)
 // through the projection plane, and out into the scene.  All we do is
@@ -18,7 +21,10 @@ vec3f RayTracer::trace( Scene *scene, double x, double y )
 {
     ray r( vec3f(0,0,0), vec3f(0,0,0) );
     scene->getCamera()->rayThrough( x,y,r );
-	return traceRay( scene, r, vec3f(1.0,1.0,1.0), 0 ).clamp();
+	const float threshold	= traceUI->getTreshold();
+	const vec3f thresh(threshold, threshold, threshold);
+	const int	depth		= traceUI->getDepth();
+	return traceRay( scene, r, thresh, depth ).clamp();
 }
 
 // Do recursive ray tracing!  You'll want to insert a lot of code here

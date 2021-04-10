@@ -46,7 +46,7 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 			const vec3f		L	= light->getDirection(point);	// Direction to the light source
 			const double	NL	= N.dot(L);
 			
-			vec3f diffuse = this->kd * NL;
+			vec3f diffuse = prod(this->kd * NL, vec3f(1.0f, 1.0f, 1.0f) - this->kt);
 			if (NL <= 0.0) continue;
 
 			// Specular component
