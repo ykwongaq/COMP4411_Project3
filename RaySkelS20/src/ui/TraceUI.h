@@ -40,6 +40,10 @@ public:
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
 
+	//Added 
+	Fl_Check_Button*	m_adaptiveCheckButton;
+	Fl_Check_Button* m_jitteringCheckButton;
+
 	TraceGLWindow*		m_traceGlWindow;
 
 	// member functions
@@ -50,6 +54,8 @@ public:
 	int			getSize();
 	int			getDepth();
 
+	bool		Jittering() { return m_nJittering; }
+	bool		Adaptive() { return m_nAdaptive; }
 private:
 	RayTracer*	raytracer;
 
@@ -60,7 +66,8 @@ private:
 	float m_nAtteunQuadric;
 	float m_nAmbientLight;
 	float m_nThreshold;
-
+	bool m_nJittering = false;
+	bool m_nAdaptive = false;
 // static class members
 	static Fl_Menu_Item menuitems[];
 
@@ -80,6 +87,10 @@ private:
 	static void cb_atteunQuadricSlides(Fl_Widget* o, void* v);
 	static void cb_ambientLightSlides(Fl_Widget* o, void* v);
 	static void cb_thresholdSlides(Fl_Widget* o, void* v);
+
+	static void cd_jitteringLightButton(Fl_Widget* o, void* v);
+	static void cd_AdaptiveLightButton(Fl_Widget* o, void* v);
+
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);

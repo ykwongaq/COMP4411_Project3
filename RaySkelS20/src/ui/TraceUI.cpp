@@ -113,6 +113,14 @@ void TraceUI::cb_thresholdSlides(Fl_Widget* o, void* v)
 {
 	((TraceUI*)(o->user_data()))->m_nThreshold = int(((Fl_Slider*)o)->value());
 }
+void TraceUI::cd_jitteringLightButton(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nJittering = int(((Fl_Slider*)o)->value());
+}
+void TraceUI::cd_AdaptiveLightButton(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nAdaptive = int(((Fl_Slider*)o)->value());
+}
 
 void TraceUI::cb_render(Fl_Widget* o, void* v)
 {
@@ -348,6 +356,16 @@ TraceUI::TraceUI() {
 		m_stopButton = new Fl_Button(240, 55, 70, 25, "&Stop");
 		m_stopButton->user_data((void*)(this));
 		m_stopButton->callback(cb_stop);
+
+		m_jitteringCheckButton = new Fl_Check_Button(10, 210, 60, 20, "Jittering Light");
+		m_jitteringCheckButton->user_data((void*)(this));
+		m_jitteringCheckButton->value(m_nJittering);
+		m_jitteringCheckButton->callback(cd_jitteringLightButton);
+
+		m_adaptiveCheckButton = new Fl_Check_Button(130, 210, 60, 20, "Adaptive");
+		m_adaptiveCheckButton->user_data((void*)(this));
+		m_adaptiveCheckButton->value(m_nAdaptive);
+		m_adaptiveCheckButton->callback(cd_AdaptiveLightButton);
 
 		m_mainWindow->callback(cb_exit2);
 		m_mainWindow->when(FL_HIDE);
