@@ -14,6 +14,7 @@
 
 static bool done;
 
+
 //------------------------------------- Help Functions --------------------------------------------
 TraceUI* TraceUI::whoami(Fl_Menu_* o)	// from menu item back to UI itself
 {
@@ -90,6 +91,27 @@ void TraceUI::cb_sizeSlides(Fl_Widget* o, void* v)
 void TraceUI::cb_depthSlides(Fl_Widget* o, void* v)
 {
 	((TraceUI*)(o->user_data()))->m_nDepth=int( ((Fl_Slider *)o)->value() ) ;
+}
+
+void TraceUI::cb_atteunConstantSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nAtteunConstant = int(((Fl_Slider*)o)->value());
+}
+void TraceUI::cb_atteunLinearSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nAtteunLinear = int(((Fl_Slider*)o)->value());
+}
+void TraceUI::cb_atteunQuadricSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nAtteunQuadric = int(((Fl_Slider*)o)->value());
+}
+void TraceUI::cb_ambientLightSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nAmbientLight = int(((Fl_Slider*)o)->value());
+}
+void TraceUI::cb_thresholdSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nThreshold = int(((Fl_Slider*)o)->value());
 }
 
 void TraceUI::cb_render(Fl_Widget* o, void* v)
@@ -259,7 +281,7 @@ TraceUI::TraceUI() {
 		m_auteunationConstantSlider->step(0.01);
 		m_auteunationConstantSlider->value(m_nAtteunConstant);
 		m_auteunationConstantSlider->align(FL_ALIGN_RIGHT);
-		m_auteunationConstantSlider->callback(cb_sizeSlides);
+		m_auteunationConstantSlider->callback(cb_atteunConstantSlides);
 
 		// install slider atteunation  linear
 		m_auteunationLinearSlider = new Fl_Value_Slider(10, 105, 180, 20, "Auteunation Linear");
@@ -272,7 +294,7 @@ TraceUI::TraceUI() {
 		m_auteunationLinearSlider->step(0.01);
 		m_auteunationLinearSlider->value(m_nAtteunLinear);
 		m_auteunationLinearSlider->align(FL_ALIGN_RIGHT);
-		m_auteunationLinearSlider->callback(cb_sizeSlides);
+		m_auteunationLinearSlider->callback(cb_atteunLinearSlides);
 
 		// install slider atteunation  quadric
 		m_auteunationQuadricSlider = new Fl_Value_Slider(10, 130, 180, 20, "Auteunation Quadric");
@@ -285,7 +307,7 @@ TraceUI::TraceUI() {
 		m_auteunationQuadricSlider->step(0.01);
 		m_auteunationQuadricSlider->value(m_nAtteunQuadric);
 		m_auteunationQuadricSlider->align(FL_ALIGN_RIGHT);
-		m_auteunationQuadricSlider->callback(cb_sizeSlides);
+		m_auteunationQuadricSlider->callback(cb_atteunQuadricSlides);
 
 
 		// install slider ambient light 
@@ -299,7 +321,7 @@ TraceUI::TraceUI() {
 		m_auteunationQuadricSlider->step(0.01);
 		m_auteunationQuadricSlider->value(m_nAmbientLight);
 		m_auteunationQuadricSlider->align(FL_ALIGN_RIGHT);
-		m_auteunationQuadricSlider->callback(cb_sizeSlides);
+		m_auteunationQuadricSlider->callback(cb_ambientLightSlides);
 
 
 		// install slider theshold
@@ -313,7 +335,7 @@ TraceUI::TraceUI() {
 		m_thresholdSlider->step(0.01);
 		m_thresholdSlider->value(m_nThreshold);
 		m_thresholdSlider->align(FL_ALIGN_RIGHT);
-		m_thresholdSlider->callback(cb_sizeSlides);
+		m_thresholdSlider->callback(cb_thresholdSlides);
 
 
 
