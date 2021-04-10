@@ -29,6 +29,14 @@ public:
 	Fl_Slider*			m_sizeSlider;
 	Fl_Slider*			m_depthSlider;
 
+	//Added
+
+	Fl_Slider*			m_auteunationConstantSlider;
+	Fl_Slider*			m_auteunationLinearSlider;
+	Fl_Slider*			m_auteunationQuadricSlider;
+	Fl_Slider*			m_ambientLightSlider;
+	Fl_Slider*			m_thresholdSlider;
+
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
 
@@ -47,6 +55,11 @@ private:
 
 	int			m_nSize;
 	int			m_nDepth;
+	float m_nAtteunConstant;
+	float m_nAtteunLinear;
+	float m_nAtteunQuadric;
+	float m_nAmbientLight;
+	float m_nThreshold;
 
 // static class members
 	static Fl_Menu_Item menuitems[];

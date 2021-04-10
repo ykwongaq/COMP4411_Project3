@@ -85,7 +85,10 @@ public:
 	{
 		return n[0]*b[0] + n[1]*b[1] + n[2]*b[2];
 	}
-
+	// calculate the distance of this and b
+	double distanceTo(const vec3f& b) const {
+		return sqrt((b[0] - n[0]) * (b[0] - n[0]) + (b[1] - n[1]) * (b[1] - n[1]) + (b[2] - n[2]) * (b[2] - n[2]));
+	}
 	double length_squared() const
 		{ return n[0]*n[0] + n[1]*n[1] + n[2]*n[2]; }
 	double length() const

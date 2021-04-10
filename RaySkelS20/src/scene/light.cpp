@@ -1,6 +1,24 @@
 #include <cmath>
 
 #include "light.h"
+//#include "vecmath.h"
+
+float MIN(float a, float b) 
+{
+	if (a < b) {
+		return a;
+	}
+	return b;
+
+}
+float MAX(float a, float b)
+{
+	if (a > b) {
+		return a;
+	}
+	return b;
+
+}
 
 double DirectionalLight::distanceAttenuation( const vec3f& P ) const
 {
