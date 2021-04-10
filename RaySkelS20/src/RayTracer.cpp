@@ -54,6 +54,11 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 		const Material& m	= i.getMaterial();
 		vec3f intensity		= m.shade(scene, r, i);
 
+		// Bonus 1 : Adaptive Termination
+		if (traceUI->getDepth() != depth && intensity[0] < thresh[0] && intensity[1] < thresh[1] && intensity[2] < thresh[2]) {
+			return vec3f(0.0f, 0.0f, 0.0f);
+		}
+
 		// ======================== Handle reflection =======================================
 		
 		// Get the point of intersection
