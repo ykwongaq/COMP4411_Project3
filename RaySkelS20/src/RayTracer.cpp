@@ -71,30 +71,25 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 
 		// Get the index of refraction
 		// We also need to consider the entering material
-
-		/*
+		const bool entering = this->isEntering(L, N);
 		double n_i = 0.0f, n_t = 0.0f;
-		if (this->isEntering(L, N)) {
-			n_i = 1;
+		if (entering) {
+			n_i = r.getPrevMaterialIndex();
 			n_t = m.index;
 		} else {
 			n_i = m.index;
 			n_t = 1;
 		}
-		*/
-
-		const bool entering = this->isEntering(L, N);
-		const double n_i	= entering ? 1 : m.index;
-		const double n_t	= entering ? m.index : 1;
 
 		// ======================== Handle refraction =======================================
 
 		vec3f refraction_i(0.0f, 0.0f, 0.0f);
 		if (!this->TIR(-L, N, n_i, n_t)) {
 			// Total Internal Reflection doesn't occur
-			const vec3f refract_dir = this->getRefrationDir(-L, N, n_i, n_t);
-			const vec3f point		= r.at(i.t) - N * NORMAL_EPSILON;
+			const vec3f refract_dir = this->getRefrationDir(-L, entering ? N : -N, n_i, n_t);
+			const vec3f point		= r.at(i.t) - N * NORMAL_EPSILON * (entering ? 1 : -1);
 			ray refract_ray(point, refract_dir);
+			refract_ray.setPrevMaterial(&m);
 			refraction_i = this->traceRay(scene, refract_ray, thresh, depth - 1);
 		}
 
