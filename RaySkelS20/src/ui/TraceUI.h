@@ -57,6 +57,12 @@ public:
 
 	bool		Jittering() { return m_nJittering; }
 	bool		Adaptive() { return m_nAdaptive; }
+	float		getConstantAtten()	const;
+	float		getLinearAtten()	const;
+	float		getQuadAtten()		const;
+	float		getAmbientLight()	const;
+	float		getTreshold()		const;
+
 private:
 	RayTracer*	raytracer;
 

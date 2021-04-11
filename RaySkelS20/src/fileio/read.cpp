@@ -20,6 +20,9 @@
 #include "../SceneObjects/Sphere.h"
 #include "../SceneObjects/Square.h"
 #include "../scene/light.h"
+#include "../ui/TraceUI.h"
+
+extern TraceUI *traceUI;
 
 typedef map<string,Material*> mmap;
 
@@ -307,7 +310,9 @@ static void processGeometry( string name, Obj *child, Scene *scene,
 		} else if( name == "box" ) {
 			obj = new Box( scene, mat );
 		} else if( name == "cylinder" ) {
-			obj = new Cylinder( scene, mat );
+			bool capped = true;
+			maybeExtractField(child, "capped", capped);
+			obj = new Cylinder( scene, mat, capped );
 		} else if( name == "cone" ) {
 			double height = 1.0;
 			double bottom_radius = 1.0;
@@ -529,10 +534,34 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 			throw ParseError( "No info for point_light" );
 		}
 
-		scene->add( new PointLight( scene, 
-			tupleToVec( getField( child, "position" ) ),
-			tupleToVec( getColorField( child ) ) ) );
-	} else if( 	name == "sphere" ||
+		// Get the distance attenuation coefficient
+		if (hasField(child, "constant_attenuation_coeff") &&
+			hasField(child, "linear_attenuation_coeff") &&
+			hasField(child, "quadratic_attenuation_coeff")) {
+			scene->add(new PointLight(scene,
+					   tupleToVec(getField(child, "position")),
+					   tupleToVec(getColorField(child)),
+					   getField(child, "constant_attenuation_coeff")->getScalar(),
+					   getField(child, "linear_attenuation_coeff")->getScalar(),
+					   getField(child, "quadratic_attenuation_coeff")->getScalar()));
+		} else {
+			scene->add( new PointLight( scene, 
+						tupleToVec( getField( child, "position" ) ),
+						tupleToVec( getColorField( child ) ) ) );
+		}
+		
+	} else if ( name == "ambient_light") {
+
+		// Add ambient light source
+		if (child == NULL)
+			throw ParseError("No info for ambient_light");
+
+		scene->add(new AmbientLight(
+			scene,
+			tupleToVec(getColorField(child))
+		));
+
+	} else if (name == "sphere" ||
 				name == "box" ||
 				name == "cylinder" ||
 				name == "cone" ||

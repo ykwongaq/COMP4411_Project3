@@ -12,11 +12,12 @@ bool Box::intersectLocal( const ray& r, isect& i ) const
     // Add box intersection code here.
 	// it currently ignores all boxes and just returns false.
 	
-	
+	// Make use of build-in function provide by bounding box.
 	double Tnear = -1, Tfar = -1;
 	vec3f normal;
 	bool isIntersect = this->getLocalBoundingBox().intersect(r, Tnear, Tfar, normal);
 
+	// Set up the intersection only of the ray intersect with the box
 	if (isIntersect) {
 		i.setT(Tnear);
 		i.setN(normal);
