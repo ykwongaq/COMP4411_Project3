@@ -23,12 +23,18 @@ public:
 	void tracePixel( int i, int j );
 
 	bool loadScene( char* fn );
+	bool loadBackground(char* fn);
+	vec3f getBackgroundColor(double x, double y);
 
 	bool sceneLoaded();
 
+	bool background_switch; // to check the BG is checked or not
+
 private:
 	unsigned char *buffer;
+	unsigned char* background;
 	int buffer_width, buffer_height;
+	int background_width, background_height; // to check the BG size
 	int bufferSize;
 	Scene *scene;
 
