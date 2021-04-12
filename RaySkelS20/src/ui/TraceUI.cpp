@@ -117,9 +117,8 @@ void TraceUI::cd_jitteringLightButton(Fl_Widget* o, void* v)
 {
 	((TraceUI*)(o->user_data()))->m_nJittering = int(((Fl_Slider*)o)->value());
 }
-void TraceUI::cd_AdaptiveLightButton(Fl_Widget* o, void* v)
-{
-	((TraceUI*)(o->user_data()))->m_nAdaptive = int(((Fl_Slider*)o)->value());
+void TraceUI::cb_superSampleSliders(Fl_Widget *o, void *v) {
+	((TraceUI *) (o->user_data()))->m_nSuperSample = int(((Fl_Slider *) o)->value());
 }
 
 void TraceUI::cb_render(Fl_Widget* o, void* v)
@@ -245,6 +244,10 @@ float TraceUI::getTreshold() const {
 	return this->m_nThreshold;
 }
 
+int TraceUI::getSuperSample() const {
+	return this->m_nSuperSample;
+}
+
 // menu definition
 Fl_Menu_Item TraceUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
@@ -272,6 +275,8 @@ TraceUI::TraceUI() {
 	this->m_nAtteunQuadric	= 0.5f;
 	this->m_nAmbientLight	= 0.0f;
 	this->m_nThreshold		= 0.0f;
+	this->m_nJittering		= false;
+	this->m_nSuperSample	= 0;
 
 	m_mainWindow = new Fl_Window(100, 40, 320, 500, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
@@ -359,7 +364,6 @@ TraceUI::TraceUI() {
 		m_auteunationQuadricSlider->align(FL_ALIGN_RIGHT);
 		m_auteunationQuadricSlider->callback(cb_ambientLightSlides);
 
-
 		// install slider theshold
 		m_thresholdSlider = new Fl_Value_Slider(10, 180, 180, 20, "Threshold");
 		m_thresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
@@ -373,7 +377,22 @@ TraceUI::TraceUI() {
 		m_thresholdSlider->align(FL_ALIGN_RIGHT);
 		m_thresholdSlider->callback(cb_thresholdSlides);
 
+		m_auteunationQuadricSlider = new Fl_Value_Slider(10, 205, 180, 20, "Super Sampling");
+		m_auteunationQuadricSlider->user_data((void *) (this));	// record self to be used by static callback functions
+		m_auteunationQuadricSlider->type(FL_HOR_NICE_SLIDER);
+		m_auteunationQuadricSlider->labelfont(FL_COURIER);
+		m_auteunationQuadricSlider->labelsize(12);
+		m_auteunationQuadricSlider->minimum(0);
+		m_auteunationQuadricSlider->maximum(5);
+		m_auteunationQuadricSlider->step(1);
+		m_auteunationQuadricSlider->value(this->m_nSuperSample);
+		m_auteunationQuadricSlider->align(FL_ALIGN_RIGHT);
+		m_auteunationQuadricSlider->callback(cb_superSampleSliders);
 
+		m_jitteringCheckButton = new Fl_Check_Button(10, 230, 60, 20, "Jittering Light");
+		m_jitteringCheckButton->user_data((void*)(this));
+		m_jitteringCheckButton->value(m_nJittering);
+		m_jitteringCheckButton->callback(cd_jitteringLightButton);
 		//for button
 		m_renderButton = new Fl_Button(240, 27, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));
@@ -383,15 +402,9 @@ TraceUI::TraceUI() {
 		m_stopButton->user_data((void*)(this));
 		m_stopButton->callback(cb_stop);
 
-		m_jitteringCheckButton = new Fl_Check_Button(10, 210, 60, 20, "Jittering Light");
-		m_jitteringCheckButton->user_data((void*)(this));
-		m_jitteringCheckButton->value(m_nJittering);
-		m_jitteringCheckButton->callback(cd_jitteringLightButton);
+		
 
-		m_adaptiveCheckButton = new Fl_Check_Button(130, 210, 60, 20, "Adaptive");
-		m_adaptiveCheckButton->user_data((void*)(this));
-		m_adaptiveCheckButton->value(m_nAdaptive);
-		m_adaptiveCheckButton->callback(cd_AdaptiveLightButton);
+		
 
 		m_mainWindow->callback(cb_exit2);
 		m_mainWindow->when(FL_HIDE);

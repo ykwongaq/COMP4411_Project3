@@ -36,6 +36,7 @@ public:
 	Fl_Slider*			m_auteunationQuadricSlider;
 	Fl_Slider*			m_ambientLightSlider;
 	Fl_Slider*			m_thresholdSlider;
+	Fl_Slider*			m_superSampleSlider;
 
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
@@ -59,21 +60,23 @@ public:
 	float		getQuadAtten()		const;
 	float		getAmbientLight()	const;
 	float		getTreshold()		const;
+	int			getSuperSample()	const;
 
 	bool		Jittering() { return m_nJittering; }
-	bool		Adaptive() { return m_nAdaptive; }
+
 private:
 	RayTracer*	raytracer;
 
 	int			m_nSize;
 	int			m_nDepth;
-	float m_nAtteunConstant;
-	float m_nAtteunLinear;
-	float m_nAtteunQuadric;
-	float m_nAmbientLight;
-	float m_nThreshold;
-	bool m_nJittering = false;
-	bool m_nAdaptive = false;
+	float		m_nAtteunConstant;
+	float		m_nAtteunLinear;
+	float		m_nAtteunQuadric;
+	float		m_nAmbientLight;
+	float		m_nThreshold;
+	bool		m_nJittering;
+	int			m_nSuperSample;
+
 // static class members
 	static Fl_Menu_Item menuitems[];
 
@@ -93,9 +96,8 @@ private:
 	static void cb_atteunQuadricSlides(Fl_Widget* o, void* v);
 	static void cb_ambientLightSlides(Fl_Widget* o, void* v);
 	static void cb_thresholdSlides(Fl_Widget* o, void* v);
-
+	static void cb_superSampleSliders(Fl_Widget *o, void *v);
 	static void cd_jitteringLightButton(Fl_Widget* o, void* v);
-	static void cd_AdaptiveLightButton(Fl_Widget* o, void* v);
 
 
 	static void cb_render(Fl_Widget* o, void* v);

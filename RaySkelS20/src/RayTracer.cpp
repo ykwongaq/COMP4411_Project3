@@ -243,7 +243,32 @@ void RayTracer::tracePixel( int i, int j )
 	double x = double(i)/double(buffer_width);
 	double y = double(j)/double(buffer_height);
 
-	col = trace( scene,x,y );
+	const int samplingSize = traceUI->getSuperSample();
+	if (samplingSize > 0) {
+		// Bonus 2 : Supersampling
+		const double pixel_w = 1.0 / buffer_width;	// Width of one pixel
+		const double pixel_h = 1.0 / buffer_width;	// Height of one pixel
+
+		const double sub_pixel_w = pixel_w / samplingSize;	// Width of sub-region of one pixel
+		const double sub_pixel_h = pixel_h / samplingSize;	// Height of sub-region of one pixel
+
+		for (int i = 0; i < samplingSize; ++i) {
+			const double base_y = y + ((double) i / samplingSize - 0.5) * pixel_h;
+			for (int j = 0; j < samplingSize; ++j) {
+				const double base_x = x + ((double) j / samplingSize - 0.5) * pixel_w;
+				const double jitter_y = (rand() / (double) RAND_MAX - 0.5) * sub_pixel_h + base_y;
+				const double jitter_x = (rand() / (double) RAND_MAX - 0.5) * sub_pixel_w + base_x;
+				const bool isJittering = traceUI->Jittering();
+				col += trace(scene, isJittering ? jitter_x : base_x, isJittering ? jitter_y : base_y);
+			}
+		}
+
+		col /= samplingSize * samplingSize;
+	} else {
+		// Do normal ray tracing
+		col = trace( scene,x,y );
+	}
+	
 
 	unsigned char *pixel = buffer + ( i + j * buffer_width ) * 3;
 
