@@ -1,6 +1,9 @@
 #include "ray.h"
 #include "material.h"
 #include "light.h"
+#include <math.h>
+
+#define PI 3.14159265
 
 // Apply the phong model to this point on the surface of the object, returning
 // the color of that point.
@@ -46,6 +49,14 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 			const vec3f		L	= light->getDirection(point);	// Direction to the light source
 			const double	NL	= N.dot(L);
 			
+			// Bonus 3 : Spot Light
+			if (SpotLight *spotLight = dynamic_cast<SpotLight *>(*it)) {
+				// Case the spot light can't reach the point
+				if (acos(NL) * 180 / PI > spotLight->getConeAngle()) {
+					continue;
+				}
+			}
+
 			vec3f diffuse = prod(this->kd * NL, vec3f(1.0f, 1.0f, 1.0f) - this->kt);
 			if (NL <= 0.0) continue;
 

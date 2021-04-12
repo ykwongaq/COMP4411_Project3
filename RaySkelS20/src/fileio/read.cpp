@@ -561,7 +561,30 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 			tupleToVec(getColorField(child))
 		));
 
-	} else if (name == "sphere" ||
+	} else if ( name == "spot_light") {
+
+		// Bonus 3 : Spot Light
+		if (child == NULL) throw ParseError("No info for spot_lgiht");
+		if (hasField(child, "constant_attenuation_coeff") &&
+			hasField(child, "linear_attenuation_coeff") &&
+			hasField(child, "quadratic_attenuation_coeff")) {
+			scene->add(new SpotLight(scene,
+					   tupleToVec(getColorField(child)),
+					   tupleToVec(getField(child, "direction")).normalize(),
+					   tupleToVec(getField(child, "position")),
+					   tupleToVec(getField(child, "edgeplace")),
+					   getField(child, "constant_attenuation_coeff")->getScalar(),
+					   getField(child, "linear_attenuation_coeff")->getScalar(),
+					   getField(child, "quadratic_attenuation_coeff")->getScalar()));
+		} else {
+			scene->add(new SpotLight(scene,
+					   tupleToVec(getColorField(child)),
+					   tupleToVec(getField(child, "direction")).normalize(),
+					   tupleToVec(getField(child, "position")),
+					   tupleToVec(getField(child, "edgeplace"))));
+		}
+	}
+	else if (name == "sphere" ||
 				name == "box" ||
 				name == "cylinder" ||
 				name == "cone" ||
