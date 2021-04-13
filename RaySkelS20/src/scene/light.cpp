@@ -3,6 +3,10 @@
 #include "light.h"
 #include "../ui/TraceUI.h"
 
+#define MAX(a,b) (a > b ? a : b)
+#define MIN(a,b) (a < b ? a : b)
+#define M_PI 3.1415926535
+
 extern TraceUI *traceUI;
 
 double DirectionalLight::distanceAttenuation( const vec3f& P ) const
@@ -125,4 +129,72 @@ vec3f AmbientLight::getColor(const vec3f &P) const {
 // Therefore, we just return a default direction
 vec3f AmbientLight::getDirection(const vec3f &P) const {
 	return vec3f();
+}
+
+
+vec3f SpotLight::shadowAttenuation(const vec3f& P) const
+{
+	vec3f L = (P - position).normalize(); //actually -L here
+	double coslambda = MAX(0, L.dot(orientation)); double boundary = cos(coneangle * M_PI / 180.0);
+	// outside the focus of the spotlight, no shadow cast at all
+	if (coslambda < boundary) return vec3f(1, 1, 1);
+	double distance = P.distanceTo(position);
+	vec3f d = (position - P).normalize();
+	ray r(P, d);
+	vec3f atten = { 1, 1, 1 };
+	vec3f tempP = P;
+	isect isec;
+	ray tempr(r);
+	// recursively find intersection
+	while (scene->intersect(tempr, isec)) {
+		// intersection is not before light
+		if ((distance -= isec.t) < RAY_EPSILON) { return atten; }
+		// a totally un-transparent object
+		if (isec.getMaterial().kt.iszero()) return { 0,0,0 };
+		tempP = tempr.at(isec.t);
+		tempr = ray(tempP, d);
+		atten = atten.dotElement(isec.getMaterial().kt);
+	}
+	return atten;
+	return vec3f();
+}
+
+double SpotLight::distanceAttenuation(const vec3f& P) const
+{
+	// distance attenuation here contains the Warn Model as well
+	double d = P.distanceTo(position);
+	double distance_atten = MIN(1, 1.0 / (constant_attenuation_coeff + linear_attenuation_coeff * d + quadratic_attenuation_coeff * d * d));
+	vec3f L = (P - position).normalize();
+	double warn_atten = 1.0;
+	double coslambda = MAX(0, L.dot(orientation)); double boundary = cos(coneangle * M_PI / 180.0);
+	if (coslambda < boundary) {
+		// the particle is outside boundary
+		warn_atten = 0.0;
+	}
+	else {
+		warn_atten = pow(coslambda, focus_constant);
+	}
+	return distance_atten * warn_atten;
+}
+
+vec3f SpotLight::getColor(const vec3f& P) const
+{
+	return this->color;
+}
+
+vec3f SpotLight::getDirection(const vec3f& P) const
+{
+	return (position - P).normalize();
+}
+
+void SpotLight::changeAttenuationCoeff(double a, double b, double c)
+{
+	constant_attenuation_coeff = a;
+	linear_attenuation_coeff = b;
+	quadratic_attenuation_coeff = c;
+}
+
+void SpotLight::changeFocusConstraint(double p)
+{
+	focus_constant = p;
 }

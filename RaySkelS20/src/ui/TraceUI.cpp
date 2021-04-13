@@ -60,6 +60,17 @@ void TraceUI::cb_load_background(Fl_Menu_* o, void* v)
 		pUI->raytracer->loadBackground(newfile);
 	}
 }
+
+
+void TraceUI::cb_load_texture(Fl_Menu_* o, void* v)
+{
+	TraceUI* pUI = whoami(o);
+	char* newfile = fl_file_chooser("Load Texture Image?", "*.bmp", NULL);
+	if (newfile != NULL) {
+		pUI->raytracer->loadtextureMappingImage(newfile);
+	}
+}
+
 void TraceUI::cb_exit(Fl_Menu_* o, void* v)
 {
 	TraceUI* pUI=whoami(o);
@@ -133,6 +144,11 @@ void TraceUI::cd_AdaptiveLightButton(Fl_Widget* o, void* v)
 void TraceUI::cd_BackgroundButton(Fl_Widget* o, void* v)
 {
 	((TraceUI*)(o->user_data()))->raytracer->background_switch = ((TraceUI*)(o->user_data()))->m_nbackground ^= true;
+}
+
+void TraceUI::cb_textureMappingButton(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nTextureMapping ^= true;
 }
 
 void TraceUI::cb_render(Fl_Widget* o, void* v)
@@ -264,6 +280,7 @@ Fl_Menu_Item TraceUI::menuitems[] = {
 		{ "&Load Scene...",	FL_ALT + 'l', (Fl_Callback *)TraceUI::cb_load_scene },
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)TraceUI::cb_save_image },
 		{ "&Load Background...",	FL_ALT + 'b', (Fl_Callback*)TraceUI::cb_load_background },
+		{ "&Load Texture Image",	FL_ALT + 't', (Fl_Callback*)TraceUI::cb_load_texture },
 		{ "&Exit",			FL_ALT + 'e', (Fl_Callback *)TraceUI::cb_exit },
 		{ 0 },
 
@@ -402,15 +419,20 @@ TraceUI::TraceUI() {
 		m_jitteringCheckButton->value(m_nJittering);
 		m_jitteringCheckButton->callback(cd_jitteringLightButton);
 
-		m_adaptiveCheckButton = new Fl_Check_Button(130, 210, 60, 20, "Adaptive");
+		m_adaptiveCheckButton = new Fl_Check_Button(120, 210, 60, 20, "Adaptive");
 		m_adaptiveCheckButton->user_data((void*)(this));
 		m_adaptiveCheckButton->value(m_nAdaptive);
 		m_adaptiveCheckButton->callback(cd_AdaptiveLightButton);
 
-		m_backgroundCheckButton = new Fl_Check_Button(220, 210, 70, 25, "Background");
+		m_backgroundCheckButton = new Fl_Check_Button(210, 210, 60, 20, "Background");
 		m_backgroundCheckButton->user_data((void*)(this));
 		m_backgroundCheckButton->value(m_nbackground);
 		m_backgroundCheckButton->callback(cd_BackgroundButton);
+
+		m_textureMappingButton = new Fl_Check_Button(10, 250, 70, 20, "Texture");
+		m_textureMappingButton->user_data((void*)(this));
+		m_textureMappingButton->value(m_nTextureMapping);
+		m_textureMappingButton->callback(cb_textureMappingButton);
 
 		m_mainWindow->callback(cb_exit2);
 		m_mainWindow->when(FL_HIDE);

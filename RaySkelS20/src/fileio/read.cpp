@@ -561,7 +561,31 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 			tupleToVec(getColorField(child))
 		));
 
-	} else if (name == "sphere" ||
+	}else if (name == "spot_light") {
+		if (child == NULL) {
+			throw ParseError("No info for ambient_light");
+		}
+		if (hasField(child, "constant_attenuation_coeff") && hasField(child, "linear_attenuation_coeff") && hasField(child, "quadratic_attenuation_coeff")) {
+			scene->add(new SpotLight(scene,
+				tupleToVec(getField(child, "position")),
+				tupleToVec(getColorField(child)),
+				tupleToVec(getField(child, "direction")).normalize(),
+				getField(child, "coneangle")->getScalar(),
+				getField(child, "focus_constraint")->getScalar(),
+				getField(child, "constant_attenuation_coeff")->getScalar(),
+				getField(child, "linear_attenuation_coeff")->getScalar(),
+				getField(child, "quadratic_attenuation_coeff")->getScalar()));
+		}
+		else {
+			scene->add(new SpotLight(scene,
+				tupleToVec(getField(child, "position")),
+				tupleToVec(getColorField(child)),
+				tupleToVec(getField(child, "direction")).normalize(),
+				getField(child, "coneangle")->getScalar(),
+				getField(child, "focus_constraint")->getScalar()));
+		}
+	}
+	else if (name == "sphere" ||
 				name == "box" ||
 				name == "cylinder" ||
 				name == "cone" ||

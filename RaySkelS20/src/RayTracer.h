@@ -24,7 +24,11 @@ public:
 
 	bool loadScene( char* fn );
 	bool loadBackground(char* fn);
+	void loadtextureMappingImage(char* fn);
 	vec3f getBackgroundColor(double x, double y);
+	vec3f gettextureColor(double x, double y);
+	vec3f SphereInverse(const ray& r, isect& i); // for adding texture
+
 
 	bool sceneLoaded();
 
@@ -33,8 +37,10 @@ public:
 private:
 	unsigned char *buffer;
 	unsigned char* background;
+	unsigned char* textureMappingImage;
 	int buffer_width, buffer_height;
 	int background_width, background_height; // to check the BG size
+	int texture_width, texture_height; // to check the texture image
 	int bufferSize;
 	Scene *scene;
 

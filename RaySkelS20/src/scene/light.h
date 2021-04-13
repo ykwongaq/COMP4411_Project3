@@ -63,4 +63,24 @@ public:
 	virtual vec3f getDirection(const vec3f &P) const;
 };
 
+class SpotLight
+	: public Light
+{
+public:
+	SpotLight(Scene* scene, const vec3f& pos, const vec3f& color, const vec3f& orien, double theta, double p, double a = 0.25, double b = 0.01, double c = 0.01)
+		: Light(scene, color), position(pos), orientation(orien), coneangle(theta), focus_constant(p), constant_attenuation_coeff(a), linear_attenuation_coeff(b), quadratic_attenuation_coeff(c) {}
+	virtual vec3f shadowAttenuation(const vec3f& P) const;
+	virtual double distanceAttenuation(const vec3f& P) const;
+	virtual vec3f getColor(const vec3f& P) const;
+	virtual vec3f getDirection(const vec3f& P) const;
+	void changeAttenuationCoeff(double a, double b, double c);
+	void changeFocusConstraint(double p);
+
+protected:
+	vec3f position, orientation;
+	double constant_attenuation_coeff, linear_attenuation_coeff, quadratic_attenuation_coeff;
+	double coneangle, focus_constant;
+};
+
+
 #endif // __LIGHT_H__
