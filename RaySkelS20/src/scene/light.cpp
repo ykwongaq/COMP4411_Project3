@@ -221,3 +221,10 @@ double SpotLight::getConeAngle() const {
 	return this->coneAngle;
 }
 
+//WarnLight::WarnLight(Scene *scene, const vec3f &pos, const vec3f &dir, const vec3f &color, const Type &type) {}
+//
+//WarnLight::WarnLight(Scene *scene, const vec3f &pos, const vec3f &dir, const vec3f &color, cosnt Type &type, const double &const_coeff, const double &linear_coeff, cosnt double &quad_coeff) {}
+//
+//double WarnLight::distanceAttenuation(const vec3f &p) const {
+//	return 0.0;
+//}

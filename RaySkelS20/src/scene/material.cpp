@@ -51,7 +51,7 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 			
 			// Bonus 3 : Spot Light
 			if (SpotLight *spotLight = dynamic_cast<SpotLight *>(*it)) {
-				// Case the spot light can't reach the point
+				// Handle the case that spot light can't reach the point
 				if (acos(NL) * 180 / PI > spotLight->getConeAngle()) {
 					continue;
 				}

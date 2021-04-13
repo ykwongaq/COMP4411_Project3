@@ -81,4 +81,33 @@ private:
 	double const_coeff, linear_coeff, quad_coeff;
 };
 
+// Bonus 9 : Warn Model
+//class WarnLight : public PointLight {
+//public:
+//	
+//	// Type of light shape
+//	enum struct Type {
+//		kCircle = 0,
+//		kSquare,
+//		kTriangle,
+//		kStar
+//	};
+//	
+//	WarnLight(Scene *scene, const vec3f &pos, const vec3f &dir, const vec3f &color, const Type& type);
+//	WarnLight(Scene *scene, const vec3f &pos, const vec3f &dir, const vec3f &color, cosnt Type& type, const double &const_coeff, const double &linear_coeff, cosnt double &quad_coeff);
+//	
+//	double distanceAttenuation(const vec3f &p) const override;
+//
+//private:
+//
+//	void setUpMatrix(const vec3f &v, const vec3f &u);
+//
+//	vec3f direction;
+//	vec3f u, v;
+//
+//	Type type;
+//	mat4f matrix;
+//
+//	double size;
+//};
 #endif // __LIGHT_H__

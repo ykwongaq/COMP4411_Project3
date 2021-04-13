@@ -19,14 +19,14 @@ class SceneObject;
 class ray {
 public:
 	ray( const vec3f& pp, const vec3f& dd )
-		: p( pp ), d( dd ), prevMaterial(nullptr) {}
+		: p( pp ), d( dd ){}
 	ray( const ray& other ) 
-		: p( other.p ), d( other.d ), prevMaterial(other.prevMaterial) {}
+		: p( other.p ), d( other.d ) {}
 	~ray() {}
 
 	ray& operator =( const ray& other ) 
     {
-        p = other.p; d = other.d; prevMaterial = other.prevMaterial;  return *this;
+        p = other.p; d = other.d; return *this;
     }
 
 	vec3f at( double t ) const
@@ -35,14 +35,12 @@ public:
 	vec3f getPosition() const { return p; }
 	vec3f getDirection() const { return d; }
 
-    void setPrevMaterial(const Material *prevMaterial) { this->prevMaterial = prevMaterial; };
-    int getPrevMaterialIndex() const {
-        return this->prevMaterial ? this->prevMaterial->index: 1;
-    }
+    stack<const Material *> prevMaterial;
+
 protected:
 	vec3f p;
 	vec3f d;
-    const Material *prevMaterial;
+    
 };
 
 // The description of an intersection point.

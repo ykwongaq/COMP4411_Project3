@@ -59,6 +59,8 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 			return vec3f(0.0f, 0.0f, 0.0f);
 		}
 
+		stack<const Material *> prevMaterial = r.prevMaterial;
+
 		// ======================== Handle reflection =======================================
 		
 		// Get the point of intersection
@@ -72,18 +74,22 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 
 		// Get the reflection intensity
 		ray reflected_ray(point, reflect_dir);
+		reflected_ray.prevMaterial = prevMaterial;
 		vec3f reflect_i = this->traceRay(scene, reflected_ray, thresh, depth-1);
 
 		// Get the index of refraction
 		// We also need to consider the entering material
 		const bool entering = this->isEntering(L, N);
 		double n_i = 0.0f, n_t = 0.0f;
+		
 		if (entering) {
-			n_i = r.getPrevMaterialIndex();
+			n_i = prevMaterial.empty() ? 1 : prevMaterial.top()->index;
 			n_t = m.index;
+			prevMaterial.push(&m);
 		} else {
+			if(!prevMaterial.empty()) prevMaterial.pop();
 			n_i = m.index;
-			n_t = 1;
+			n_t = prevMaterial.empty() ? 1 : prevMaterial.top()->index;
 		}
 
 		// ======================== Handle refraction =======================================
@@ -94,8 +100,8 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 			const vec3f refract_dir = this->getRefrationDir(-L, entering ? N : -N, n_i, n_t);
 			const vec3f point		= r.at(i.t) - N * NORMAL_EPSILON * (entering ? 1 : -1);
 			ray refract_ray(point, refract_dir);
-			refract_ray.setPrevMaterial(&m);
-			refraction_i = this->traceRay(scene, refract_ray, thresh, depth - 1);
+			refract_ray.prevMaterial = prevMaterial;
+			refraction_i = this->traceRay(scene, refract_ray, thresh, depth-1);
 		}
 
 		return intensity + prod(m.kr, reflect_i) + prod(m.kt, refraction_i);
