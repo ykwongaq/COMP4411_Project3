@@ -3,6 +3,8 @@
 #include "light.h"
 #include "../ui/TraceUI.h"
 
+#define PI 3.14159265
+
 extern TraceUI *traceUI;
 
 double DirectionalLight::distanceAttenuation( const vec3f& P ) const
@@ -221,10 +223,60 @@ double SpotLight::getConeAngle() const {
 	return this->coneAngle;
 }
 
-//WarnLight::WarnLight(Scene *scene, const vec3f &pos, const vec3f &dir, const vec3f &color, const Type &type) {}
-//
-//WarnLight::WarnLight(Scene *scene, const vec3f &pos, const vec3f &dir, const vec3f &color, cosnt Type &type, const double &const_coeff, const double &linear_coeff, cosnt double &quad_coeff) {}
-//
-//double WarnLight::distanceAttenuation(const vec3f &p) const {
-//	return 0.0;
-//}
+WarnLight::WarnLight(Scene *scene, const vec3f &pos, const vec3f &dir, const vec3f &color, const vec3f &type)
+: PointLight(scene, pos, color, 0, 0, 0), direction(dir), type(static_cast<Type>(static_cast<int>(type[0]))) 
+{
+	this->setUpMatrix(dir, pos);
+	this->size = 0.5;
+}
+
+WarnLight::WarnLight(Scene *scene, const vec3f &pos, const vec3f &dir, const vec3f &color, const vec3f &type, const double &const_coeff, const double &linear_coeff, const double &quad_coeff)
+: PointLight(scene, pos, color, const_coeff, linear_coeff, quad_coeff), direction(dir), type(static_cast<Type>(static_cast<int>(type[0]))) 
+{
+	this->setUpMatrix(dir, pos);
+	this->size = 0.5;
+}
+
+double WarnLight::distanceAttenuation(const vec3f &p) const {
+	vec4f proj = this->matrix * vec3f({p[0], p[1], p[2], 1});
+	const double x = proj[0];
+	const double y = proj[1];
+
+	bool show = false;
+
+	// Determine the light exceed the area of shape or not
+	double m = 0.0;
+	switch (this->type) {
+		case Type::kCircle:
+			cout << "circle" << endl;
+			show = x * x + y * y < this->size *this->size; 
+			break;
+		case Type::kSquare:
+			show = x > -this->size && x < this->size && y > -this->size && y < this->size;
+			break;
+		case Type::kTriangle:
+			m = tan(PI / 3);
+			show = y > -this->size / 2 && y < m *x + this->size && y < -m * x + this->size;
+			break;
+		case Type::kStar:
+			m = tan(PI / 3);
+			show = y > -size / 2 && y < m *x + this->size && y < -m * x + this->size;
+			show = show || (y < size / 2 && y > m * x - this->size && y > -m * x - this->size);
+			break;
+		default:
+			show = false;
+			break;
+	}
+
+	return show ? PointLight::distanceAttenuation(p) : 0;
+}
+
+void WarnLight::setUpMatrix(const vec3f &dir, const vec3f& pos) {
+	u = dir.cross({0,1,0}).normalize();
+	v = dir.cross(u).normalize();
+	u = dir.cross(v).normalize();
+	mat4f translate({1,0,0,-pos[0]}, {0,1,0,-pos[1]}, {0,0,1,-pos[2]}, {0,0,0,0});
+	mat4f rotate(vec3f({u[0],u[1],u[2],0}), vec3f({v[0],v[1],v[2],0}), vec3f({dir[0],dir[1],dir[2],0}), vec3f({0,0,0,1}));
+	mat4f project({1,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,1,0});
+	this->matrix = project * rotate * translate;
+}
