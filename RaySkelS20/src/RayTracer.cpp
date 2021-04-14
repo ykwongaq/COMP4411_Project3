@@ -53,7 +53,8 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 
 		const Material& m	= i.getMaterial();
 		vec3f intensity		= m.shade(scene, r, i);
-
+		
+		//cout << "intensity = " << intensity << endl;
 		// Bonus 1 : Adaptive Termination
 		if (traceUI->getDepth() != depth && intensity[0] < thresh[0] && intensity[1] < thresh[1] && intensity[2] < thresh[2]) {
 			return vec3f(0.0f, 0.0f, 0.0f);
@@ -76,7 +77,7 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 		ray reflected_ray(point, reflect_dir);
 		reflected_ray.prevMaterial = prevMaterial;
 		vec3f reflect_i = this->traceRay(scene, reflected_ray, thresh, depth-1);
-
+		//cout << "reflection = " << reflect_i << endl;
 		// Get the index of refraction
 		// We also need to consider the entering material
 		const bool entering = this->isEntering(L, N);
@@ -104,6 +105,7 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 			refraction_i = this->traceRay(scene, refract_ray, thresh, depth-1);
 		}
 
+		//cout << "refraction = " << refraction_i << endl;
 		return intensity + prod(m.kr, reflect_i) + prod(m.kt, refraction_i);
 	
 	} else {

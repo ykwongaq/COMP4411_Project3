@@ -19,6 +19,7 @@
 #include "../SceneObjects/Cylinder.h"
 #include "../SceneObjects/Sphere.h"
 #include "../SceneObjects/Square.h"
+#include "../SceneObjects/Torus.h"
 #include "../scene/light.h"
 #include "../ui/TraceUI.h"
 
@@ -327,6 +328,14 @@ static void processGeometry( string name, Obj *child, Scene *scene,
 			obj = new Cone( scene, mat, height, bottom_radius, top_radius, capped );
 		} else if( name == "square" ) {
 			obj = new Square( scene, mat );
+		} else if (name == "torus") {
+			double A = 2.0;
+			double B = 1.0;
+			
+			maybeExtractField(child, "A", A);
+			maybeExtractField(child, "B", B);
+
+			obj = new Torus(scene, mat, A, B);
 		}
 
         obj->setTransform(transform);
@@ -594,7 +603,8 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 				name == "scale" ||
 				name == "transform" ||
                 name == "trimesh" ||
-                name == "polymesh") { // polymesh is for backwards compatibility.
+                name == "polymesh" ||
+				name == "torus") { // polymesh is for backwards compatibility.
 		processGeometry( name, child, scene, materials, &scene->transformRoot);
 		//scene->add( geo );
 	} else if( name == "material" ) {

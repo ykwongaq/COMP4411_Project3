@@ -41,14 +41,13 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 		if (AmbientLight * ambLignt = dynamic_cast<AmbientLight *>(*it)) {
 			// Do nothing
 		} else {
-
 			Light *light = *it;
 
 			// Diffusion component
 			const vec3f		N	= i.N;	// Normal of intersection point					
 			const vec3f		L	= light->getDirection(point);	// Direction to the light source
 			const double	NL	= N.dot(L);
-			
+
 			// Bonus 3 : Spot Light
 			if (SpotLight *spotLight = dynamic_cast<SpotLight *>(*it)) {
 				// Handle the case that spot light can't reach the point
