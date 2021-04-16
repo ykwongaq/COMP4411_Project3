@@ -66,8 +66,6 @@ public:
 	float		getTreshold()		const;
 	int			getSuperSample()	const;
 
-	bool		Jittering() { return m_nJittering; }
-
 private:
 	RayTracer*	raytracer;
 
