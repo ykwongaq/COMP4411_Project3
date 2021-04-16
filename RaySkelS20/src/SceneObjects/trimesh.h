@@ -17,7 +17,6 @@ class Trimesh : public MaterialSceneObject
     typedef vector<TrimeshFace*> Faces;
     typedef vector<Material*> Materials;
     Vertices vertices;
-    Faces faces;
     Normals normals;
     Materials materials;
 public:
@@ -39,6 +38,8 @@ public:
     char *doubleCheck();
     
     void generateNormals();
+
+    Faces faces;
 };
 
 class TrimeshFace : public MaterialSceneObject

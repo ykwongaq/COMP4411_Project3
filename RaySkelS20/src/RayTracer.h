@@ -23,7 +23,7 @@ public:
 	void tracePixel( int i, int j );
 
 	bool loadScene( char* fn );
-
+	Scene *getScene() const { return this->scene; }
 	bool sceneLoaded();
 
 private:

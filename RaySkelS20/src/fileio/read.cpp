@@ -27,13 +27,13 @@ extern TraceUI *traceUI;
 
 typedef map<string,Material*> mmap;
 
-static void processObject( Obj *obj, Scene *scene, mmap& materials );
+static Geometry* processObject( Obj *obj, Scene *scene, mmap& materials, const bool addToScene );
 static Obj *getColorField( Obj *obj );
 static Obj *getField( Obj *obj, const string& name );
 static bool hasField( Obj *obj, const string& name );
 static vec3f tupleToVec( Obj *obj );
-static void processGeometry( string name, Obj *child, Scene *scene,
-	const mmap& materials, TransformNode *transform );
+static Geometry *processGeometry( string name, Obj *child, Scene *scene,
+	mmap& materials, TransformNode *transform, const bool addToScene );
 static void processTrimesh( string name, Obj *child, Scene *scene,
                                      const mmap& materials, TransformNode *transform );
 static void processCamera( Obj *child, Scene *scene );
@@ -100,7 +100,7 @@ Scene *readScene( istream& is )
 			break;
 		}
 
-		processObject( cur, ret, materials );
+		processObject( cur, ret, materials, true);
 		delete cur;
 	}
 
@@ -166,8 +166,8 @@ static vec3f tupleToVec( Obj *obj )
 	return vec3f( t[0]->getScalar(), t[1]->getScalar(), t[2]->getScalar() );
 }
 
-static void processGeometry( Obj *obj, Scene *scene,
-	const mmap& materials, TransformNode *transform )
+static Geometry *processGeometry( Obj *obj, Scene *scene,
+	mmap& materials, TransformNode *transform, bool addToScene = true)
 {
 	string name;
 	Obj *child; 
@@ -186,7 +186,7 @@ static void processGeometry( Obj *obj, Scene *scene,
 		throw ParseError( string( oss.str() ) );
 	}
 
-	processGeometry( name, child, scene, materials, transform );
+	return processGeometry( name, child, scene, materials, transform, addToScene);
 }
 
 // Extract the named scalar field into ret, if it exists.
@@ -224,13 +224,13 @@ static void verifyTuple( const mytuple& tup, size_t size )
 	}
 }
 
-static void processGeometry( string name, Obj *child, Scene *scene,
-	const mmap& materials, TransformNode *transform )
+static Geometry *processGeometry( string name, Obj *child, Scene *scene,
+	mmap& materials, TransformNode *transform, const bool addToScene = true)
 {
 	if( name == "translate" ) {
 		const mytuple& tup = child->getTuple();
 		verifyTuple( tup, 4 );
-        processGeometry( tup[3],
+        return processGeometry( tup[3],
                          scene,
                          materials,
                          transform->createChild(mat4f::translate( vec3f(tup[0]->getScalar(), 
@@ -239,7 +239,7 @@ static void processGeometry( string name, Obj *child, Scene *scene,
 	} else if( name == "rotate" ) {
 		const mytuple& tup = child->getTuple();
 		verifyTuple( tup, 5 );
-		processGeometry( tup[4],
+		return processGeometry( tup[4],
                          scene,
                          materials,
                          transform->createChild(mat4f::rotate( vec3f(tup[0]->getScalar(),
@@ -295,7 +295,19 @@ static void processGeometry( string name, Obj *child, Scene *scene,
                                                              l4[1]->getScalar(),
                                                              l4[2]->getScalar(),
                                                              l4[3]->getScalar() ) ) ) );
-	} else if( name == "trimesh" || name == "polymesh" ) { // 'polymesh' is for backwards compatibility
+	} else if (name == "subtraction") {
+		const mytuple &tup = child->getTuple();
+		verifyTuple(tup, 2);
+
+		SubtractNode *node = new SubtractNode(scene, 
+											  dynamic_cast<SceneObject *>(processObject(tup[0], scene, materials, false)),
+											  dynamic_cast<SceneObject *>(processObject(tup[1], scene, materials, false)));
+		node->setTransform(transform);
+
+		if (addToScene) scene->add(node);
+
+		return node;
+	} else if (name == "trimesh" || name == "polymesh") { // 'polymesh' is for backwards compatibility
         processTrimesh( name, child, scene, materials, transform);
     } else {
 		SceneObject *obj = NULL;
@@ -340,7 +352,11 @@ static void processGeometry( string name, Obj *child, Scene *scene,
 
         obj->setTransform(transform);
 		scene->add(obj);
+
+		return obj;
 	}
+
+	return nullptr;
 }
 
 static void processTrimesh( string name, Obj *child, Scene *scene,
@@ -510,7 +526,7 @@ processCamera( Obj *child, Scene *scene )
     }
 }
 
-static void processObject( Obj *obj, Scene *scene, mmap& materials )
+static Geometry *processObject( Obj *obj, Scene *scene, mmap& materials, const bool addToScene = true )
 {
 	// Assume the object is named.
 	string name;
@@ -613,7 +629,7 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
                 name == "trimesh" ||
                 name == "polymesh" ||
 				name == "torus") { // polymesh is for backwards compatibility.
-		processGeometry( name, child, scene, materials, &scene->transformRoot);
+		return processGeometry( name, child, scene, materials, &scene->transformRoot, addToScene);
 		//scene->add( geo );
 	} else if( name == "material" ) {
 		processMaterial( child, &materials );
@@ -622,4 +638,6 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 	} else {
 		throw ParseError( string( "Unrecognized object: " ) + name );
 	}
+
+	return nullptr;
 }

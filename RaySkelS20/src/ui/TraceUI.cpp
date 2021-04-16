@@ -11,6 +11,7 @@
 
 #include "TraceUI.h"
 #include "../RayTracer.h"
+#include "../fileio/bitmap.h"
 
 static bool done;
 

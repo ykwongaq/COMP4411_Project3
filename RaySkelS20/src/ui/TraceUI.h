@@ -98,7 +98,7 @@ private:
 	static void cb_thresholdSlides(Fl_Widget* o, void* v);
 	static void cb_superSampleSliders(Fl_Widget *o, void *v);
 	static void cd_jitteringLightButton(Fl_Widget* o, void* v);
-
+	
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);

@@ -148,6 +148,7 @@ public:
     // do not call directly - this should only be called by intersect()
 	virtual bool intersectLocal( const ray& r, isect& i ) const;
 
+	//virtual bool intersect(const ray &r, isect &i, std::stack<Geometry *> &intersections) const { return false; };
 
 	virtual bool hasBoundingBoxCapability() const;
 	const BoundingBox& getBoundingBox() const { return bounds; }
@@ -196,6 +197,7 @@ public:
     // this should be overridden if hasBoundingBoxCapability() is true.
     virtual BoundingBox ComputeLocalBoundingBox() { return BoundingBox(); }
 
+	virtual bool contains(bool intersections) const { return true; }
     void setTransform(TransformNode *transform) { this->transform = transform; };
     
 	Geometry( Scene *scene ) 
@@ -274,6 +276,7 @@ public:
 	list<Light*>::const_iterator endLights() const { return lights.end(); }
 	Camera *getCamera() { return &camera; }
 
+	void loadHeightMap(unsigned char *ptr, const int &w, const int &h);
 	
 
 private:
@@ -289,4 +292,22 @@ private:
 	BoundingBox sceneBounds;
 };
 
+// Bonus : CSG
+class SubtractNode : public SceneObject {
+public:
+	SubtractNode(Scene *scene, SceneObject *const a, SceneObject *const b);
+	virtual ~SubtractNode();
+
+	const Material &getMaterial() const override;
+	void setMaterial(Material *m) override;
+
+	virtual bool intersect(const ray &r, isect &i) const override;
+	bool contains(bool intersections) const override;
+
+	ray getLocalRay(const ray &r) const;
+
+	SceneObject *a;
+	SceneObject *b;
+
+};
 #endif // __SCENE_H__

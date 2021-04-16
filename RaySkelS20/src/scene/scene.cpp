@@ -3,6 +3,8 @@
 #include "scene.h"
 #include "light.h"
 #include "../ui/TraceUI.h"
+#include "../SceneObjects/trimesh.h"
+
 extern TraceUI* traceUI;
 
 void BoundingBox::operator=(const BoundingBox& target)
@@ -250,4 +252,101 @@ void Scene::initScene()
 		else
 			nonboundedobjects.push_back(*j);
 	}
+}
+
+void Scene::loadHeightMap(unsigned char *ptr, const int &w, const int &h) {
+	Material *mat = new Material();
+	TransformRoot *transform = new TransformRoot;
+	Trimesh *mesh = new Trimesh(this, mat, transform);
+	mat->kd = vec3f(0.5f, 0.5f, 0.5f);
+
+	// Construct triangle vertexes
+	// Note that the height (intensity) of 3D vertex is y-axis 
+	for (int j = 0; j < h; j++) 	{
+		for (int i = 0; i < w; i++) 		{
+			double x = (1.0 * i) / w;
+			double y = (1.0 * j) / h;
+			double z = ptr[(i + j * w) * 3] / 255.f;
+			mesh->addVertex({x * 5,z,y * 5});
+			mesh->addMaterial(mat);
+		}
+	}
+	for (int j = 0; j < h - 1; j++) 	{
+		for (int i = 0; i < w - 1; i++) 		{
+			mesh->addFace(j * w + i, (j + 1) * w + i, j * w + i + 1);
+			mesh->addFace((j + 1) * w + i, (j + 1) * w + i + 1, j * w + i + 1);
+		}
+	}
+
+	mesh->generateNormals();
+	for (auto &f : mesh->faces) 
+		this->boundedobjects.push_back(f);
+}
+
+SubtractNode::SubtractNode(Scene *scene, SceneObject *const a, SceneObject *const b)
+: SceneObject(scene), a(a), b(b) {}
+
+SubtractNode::~SubtractNode() {
+	delete a;
+	a = nullptr;
+	delete b;
+	b = nullptr;
+}
+
+const Material &SubtractNode::getMaterial() const {
+	// TODO: insert return statement here
+	return a->getMaterial();
+}
+
+void SubtractNode::setMaterial(Material *m) {
+	return a->setMaterial(m);
+}
+
+bool SubtractNode::intersect(const ray &r, isect &i) const {
+	i.obj = a;
+	isect aISect = i;
+	isect bISect = i;
+	const ray localRay = this->getLocalRay(r);
+	const bool isAIntersects = a->intersect(localRay, aISect);
+	const bool isBIntersects = b->intersect(localRay, bISect);
+
+	if (!isAIntersects) return false;
+	
+	const bool closer = aISect.t < bISect.t;
+	Geometry *nearObj = closer ? a : b;
+	Geometry *farObj  = closer ? b : a;
+	isect *nearISect  = closer ? &aISect : &bISect;
+
+	if (!isBIntersects || nearObj == a) {
+		i = aISect;
+		return true;
+	} else if (nearObj == b) {
+		const ray inRay = ray(localRay.at(bISect.t + RAY_EPSILON), localRay.getDirection());
+		const bool intersectsA = a->intersect(inRay, aISect);
+		const bool intersectsB = b->intersect(inRay, bISect);
+		if (intersectsA && intersectsB) {
+			isect aISect2 = aISect;
+			const ray inRay2 = ray(inRay.at(aISect.t + RAY_EPSILON), localRay.getDirection());
+			a->intersect(inRay2, aISect2);
+			if (bISect.t < aISect2.t) {
+				i = bISect;
+				i.N *= -1;
+				i.obj = a;
+				return true;
+			}
+
+			return false;
+		}
+		return false;
+	}
+}
+
+bool SubtractNode::contains(bool intersections) const {
+	return a->contains(intersections) && !b->contains(intersections);
+}
+
+ray SubtractNode::getLocalRay(const ray &r) const {
+	const vec3f pos = transform->globalToLocalCoords(r.getPosition());
+	const vec3f dir = (transform->globalToLocalCoords(r.getPosition() + r.getDirection()) - pos).normalize();
+	return ray(pos, dir);
 }
