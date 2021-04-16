@@ -1,6 +1,13 @@
 #include <cmath>
+#include <stack>
 
 #include "Square.h"
+#include "../vecmath/vecmath.h"
+
+
+#define MAX(a,b) (a > b ? a : b)
+#define MIN(a,b) (a < b ? a : b)
+#define CLAMP(x, upper, lower)(MIN(upper, MAX(x, lower)))
 
 bool Square::intersectLocal( const ray& r, isect& i ) const
 {
@@ -37,3 +44,6 @@ bool Square::intersectLocal( const ray& r, isect& i ) const
 
 	return true;
 }
+
+
+

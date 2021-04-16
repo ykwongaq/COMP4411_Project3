@@ -227,6 +227,7 @@ vec3f RayTracer::getBackgroundColor(double u, double v)
 		printf("wrong u,v axis for background\n");
 		return vec3f(1, 1, 1);
 	}
+	//printf("wrong u,v axis for background\n");
 	if (u == 1) u = 0;
 	if (v == 1) v = 0;
 	int x = u * background_width;

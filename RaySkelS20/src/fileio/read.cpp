@@ -22,6 +22,8 @@
 #include "../scene/light.h"
 #include "../ui/TraceUI.h"
 
+
+
 extern TraceUI *traceUI;
 
 typedef map<string,Material*> mmap;
@@ -415,6 +417,8 @@ static Material *getMaterial( Obj *child, const mmap& bindings )
 	return processMaterial( child );
 }
 
+
+
 static Material *processMaterial( Obj *child, mmap *bindings )
 // Generate a material from a parse sub-tree
 //
@@ -436,6 +440,7 @@ static Material *processMaterial( Obj *child, mmap *bindings )
     }
     if( hasField( child, "diffuse" ) ) {
         mat->kd = tupleToVec( getField( child, "diffuse" ) );
+
     }
     if( hasField( child, "reflective" ) ) {
         mat->kr = tupleToVec( getField( child, "reflective" ) );

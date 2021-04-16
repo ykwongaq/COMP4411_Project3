@@ -22,6 +22,8 @@ public:
 		localbounds.max = vec3f(0.5f, 0.5f, RAY_EPSILON);
         return localbounds;
     }
+
+
 };
 
 #endif // __SQUARE_H__

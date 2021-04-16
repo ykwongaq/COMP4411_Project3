@@ -2,6 +2,8 @@
 #include "material.h"
 #include "light.h"
 
+#include <cmath>
+
 // Apply the phong model to this point on the surface of the object, returning
 // the color of that point.
 vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
@@ -45,13 +47,34 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 			const vec3f		N	= i.N;	// Normal of intersection point					
 			const vec3f		L	= light->getDirection(point);	// Direction to the light source
 			const double	NL	= N.dot(L);
-			
+
+
 			vec3f diffuse = prod(this->kd * NL, vec3f(1.0f, 1.0f, 1.0f) - this->kt);
 			if (NL <= 0.0) continue;
 
 			// Specular component
 			const vec3f		R	= (2.0 * NL * N - L).normalize();	// Direction of reflection
 			const vec3f		V	= -r.getDirection();				// Direction from intersection to camera
+
+			vec3f G;
+			//testing 
+			double X_rotate = rand();
+			double Y_rotate = rand();
+			double Z_rotate = rand();
+			float M[3][3] = {
+				{cos(Y_rotate) * cos(Z_rotate) + sin(Y_rotate) * sin(X_rotate) * sin(Z_rotate), -cos(Y_rotate) * sin(Z_rotate) + sin(Y_rotate) * sin(X_rotate) * cos(Z_rotate), sin(Y_rotate) * cos(X_rotate) },
+				{cos(X_rotate) * sin(Z_rotate), cos(X_rotate) * cos(Z_rotate) , -sin(X_rotate) },
+				{-sin(Y_rotate) * cos(Z_rotate) + cos(Y_rotate) * sin(X_rotate) * sin(Z_rotate), sin(Y_rotate) * sin(Z_rotate) + cos(Y_rotate) * sin(X_rotate) * cos(Z_rotate), cos(Y_rotate) * cos(X_rotate) }};
+	
+			for (int i = 0; i < 3; i++) {
+				float number = 0;
+				for (int j = 0; j < 3; j++) {
+					number += R[j] * M[i][j];
+				}
+				G[i] = number;
+			}
+		
+
 			const double	VR = max<double>(R.dot(V), 0.0);
 
 			vec3f specular	= this->ks * pow(VR, this->shininess * 128);
