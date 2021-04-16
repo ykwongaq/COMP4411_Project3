@@ -45,6 +45,7 @@ public:
 	Fl_Check_Button*	m_adaptiveCheckButton;
 	Fl_Check_Button* m_jitteringCheckButton;
 	Fl_Check_Button* m_backgroundCheckButton;
+	Fl_Check_Button* m_textureMappingButton;
 
 	TraceGLWindow*		m_traceGlWindow;
 
@@ -56,6 +57,8 @@ public:
 	int			getSize();
 	int			getDepth();
 
+	bool		Jittering() { return m_nJittering; }
+	bool		TextureMapping() { return m_nTextureMapping; }
 	float		getConstantAtten()	const;
 	float		getLinearAtten()	const;
 	float		getQuadAtten()		const;
@@ -78,6 +81,7 @@ private:
 	int m_nSuperSample;
 	bool m_nJittering = false;
 	bool m_nbackground = false;
+	bool m_nTextureMapping =false;
 
 // static class members
 	static Fl_Menu_Item menuitems[];
@@ -87,6 +91,7 @@ private:
 	static void cb_load_scene(Fl_Menu_* o, void* v);
 	static void cb_save_image(Fl_Menu_* o, void* v);
 	static void cb_load_background(Fl_Menu_* o, void* v);
+	static void cb_load_texture(Fl_Menu_* o, void* v);
 	static void cb_exit(Fl_Menu_* o, void* v);
 	static void cb_about(Fl_Menu_* o, void* v);
 
@@ -103,6 +108,8 @@ private:
 	static void cd_jitteringLightButton(Fl_Widget* o, void* v);
 	
 	static void cd_BackgroundButton(Fl_Widget* o, void* v);
+	static void cb_textureMappingButton(Fl_Widget* o, void* v);
+
 
 
 	static void cb_render(Fl_Widget* o, void* v);

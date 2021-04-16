@@ -52,6 +52,7 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 		// more steps: add in the contributions from reflected and refracted
 		// rays.
 
+		if (traceUI->TextureMapping()) return SphereInverse(r, i);
 		const Material& m	= i.getMaterial();
 		vec3f intensity		= m.shade(scene, r, i);
 
@@ -106,7 +107,8 @@ vec3f RayTracer::traceRay( Scene *scene, ray& r,
 			refraction_i = this->traceRay(scene, refract_ray, thresh, depth-1);
 		}
 
-		//cout << "refraction = " << refraction_i << endl;
+
+
 		return intensity + prod(m.kr, reflect_i) + prod(m.kt, refraction_i);
 	
 	} else {
@@ -248,6 +250,38 @@ vec3f RayTracer::getBackgroundColor(double u, double v)
 	//printf("%lf %lf %lf\n", r, g, b);
 	return vec3f(r, g, b);
 }
+
+void RayTracer::loadtextureMappingImage(char* fn) {
+	unsigned char* data = NULL;
+	data = readBMP(fn, texture_width, texture_height);
+	if (data)
+	{
+		if (textureMappingImage)
+		{
+			delete[]textureMappingImage;
+		}
+		textureMappingImage = data;
+	}
+}
+
+vec3f RayTracer::gettextureColor(double x, double y) {
+	if (!textureMappingImage)
+	{
+		return vec3f(0.0, 0.0, 0.0);
+	}
+	if (x < 0 || x >= 1 || y < 0 || y >= 1)
+	{
+		return vec3f(0.0, 0.0, 0.0);
+	}
+	int x1 = x * texture_width;
+	int y1 = y * texture_height;
+	double v1 = textureMappingImage[(y1 * texture_width + x1) * 3] / 255.0;
+	double v2 = textureMappingImage[(y1 * texture_width + x1) * 3 + 1] / 255.0;
+	double v3 = textureMappingImage[(y1 * texture_width + x1) * 3 + 2] / 255.0;
+	return vec3f(v1, v2, v3);
+}
+
+
 void RayTracer::traceSetup( int w, int h )
 {
 	if( buffer_width != w || buffer_height != h )
@@ -274,6 +308,23 @@ void RayTracer::traceLines( int start, int stop )
 	for( int j = start; j < stop; ++j )
 		for( int i = 0; i < buffer_width; ++i )
 			tracePixel(i,j);
+}
+vec3f RayTracer::SphereInverse(const ray& r, isect& i)
+{
+	vec3f Sp = vec3f(0, 1, 0);
+	vec3f Se = vec3f(1, 0, 0);
+	vec3f Sn = i.N.normalize();
+	double pipipi = 3.1415926535;
+	double phi = acos(-Sn.dot(Sp));
+	double v = phi / pipipi;
+	double theta = acos((Se.dot(Sn)) / sin(phi)) / 2 / pipipi;
+	double u = theta;
+	if (Sp.cross(Se).dot(Sn) <= 0)
+	{
+		u = 1 - theta;
+	}
+	return gettextureColor(u, v);
+
 }
 
 void RayTracer::tracePixel( int i, int j )

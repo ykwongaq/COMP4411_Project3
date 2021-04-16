@@ -1,7 +1,7 @@
 SBT-raytracer 1.0
 
 camera {
-	position = (0,0,-4);
+	position = (0,0,-8);
 	viewdir = (0,0,1);
 	aspectratio = 1;
 	updir = (0,1,0);
@@ -15,6 +15,11 @@ directional_light {
 directional_light {
 	direction = (0,1,0);
 	colour = (0.2,0.2,0.2);
+}
+
+directional_light {
+	direction = (1,0,0);
+	colour = (0.5,0.5,0.5);
 }
 
 rotate( 1,1,1,1,
