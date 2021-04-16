@@ -1,135 +1,63 @@
 SBT-raytracer 1.0
 
-/*
-Pay some effort to understand the file format if you really want to modify this file :P
-
-Note that this only support box,sphere and cylinder as primitive
-*/
-
-camera {
-	position = (3,3,3);
-	viewdir = (-1,-1,-1);
-	aspectratio = 1;
-	updir = (0,1,0);
-}
+// box_cyl_reflect.ray
+// Test the reflection term
+// Don't forget to increase the trace depth to >= 2!
 
 
 
-
-point_light
+camera
 {
-	position = (2, 2, 2);
-	colour = (1.0, 1.0, 1.0);
-
+	position = (15, 0, 5);
+	viewdir = (-1, 0, -0.3);
+	updir = (0, 0, 1);
 }
 
-point_light
+ambient_light
 {
-	position = (2, 2, 0);
-	colour = (1.0, 1.0, 1.0);
-
+	color = (0.5, 0.5, 0.5);
 }
 
-point_light
+// Directional light which shouldn't
+// cast any shadows
+directional_light
 {
-	position = (0, 2, 2);
-	colour = (1.0, 1.0, 1.0);
-
+	direction = (-1, 0, -0.2);
+	color = (1, 1, 1);
 }
 
+// The box forms a plane, which should reflect the cylinder
+scale( 15, 15, 1, 
+	square {
+		material = {
+   		diffuse = (0.5,0,0);
+  		}
+	} )
 
-material{
-	
-	name = "#1";
-	diffuse=( 0.0,0.7,0.0);
-    ambient=( 0.2,0.2,0.2);
-    specular=( 0,0,0);
-    emissive=( 0,0,0);
-    shininess=0.2;
-    transmissive=( 0,0,0 );
-}
-
-material{
-	
-	name = "#2";
-	diffuse=( 0.8,0.0,0.0);
-    ambient=( 0.2,0.2,0.2);
-    specular=( 0,0,0);
-    emissive=( 0,0,0);
-    shininess=0.2;
-    transmissive=( 0,0,0 );
-}
-
-material{
-	
-	name = "#3";
-	diffuse=( 0.0,0.0,0.8);
-    ambient=( 0.2,0.2,0.2);
-    specular=( 0,0,0);
-    emissive=( 0,0,0);
-    shininess=0.2;
-    transmissive=( 0,0,0 );
-}
-
-material{
-	
-	name = "#4";
-	diffuse=( 0.8,0.8,0.0);
-    ambient=( 0.2,0.2,0.2);
-    specular=( 0,0,0);
-    emissive=( 0,0,0);
-    shininess=0.2;
-    transmissive=( 0,0,0 );
-}
-
-material{
-	
-	name = "#5";
-	diffuse=( 0.8,0.8,0.8);
-    ambient=( 0.2,0.2,0.2);
-    specular=( 0,0,0);
-    emissive=( 0,0,0);
-    shininess=0.2;
-    transmissive=( 0,0,0 );
-}
-
-
-csg{
-	primitiveNumber = 5;
-	
-	
-
-	queue0 = ("scale","box");
-	scale0 = (1.5,1.5,1.5);
-	primitive0 = "box";
-	materialID0 = "#5";
-
-	queue1 = ("sphere");
-	primitive1 = "sphere";
-	materialID1 = "#1";
-
-	
-
-	queue2 = ("translate","scale","cylinder");
-	translate2 = (0,0,-0.5);
-	scale2 = (0.5,0.5,3.0);
-	primitive2 = "cylinder";
-	materialID2 = "#3";
-
-	queue3 = ("translate","scale","rotate","cylinder");
-	translate3 = (0,0,-0.5);
-	scale3 = (0.5,0.5,3.0);
-	rotate3 = (0,1,0,1.57);
-	primitive3 = "cylinder";
-	materialID3 = "#4";
-
-	queue4 = ("translate","scale","rotate","cylinder");
-	translate4 = (0,0,-0.5);
-	scale4 = (0.5,0.5,3.0);
-	rotate4 = (1,0,0,1.57);
-	primitive4 = "cylinder";
-	materialID4 = "#2";
-
-	operator = ((0,"intersect",1),"minus",((2,"union",3),"union",4));
-
-}
+// We'll give this a little ambient intensity to ensure
+// that the bottom, which doesn't face the light, is still 
+// reflected properly (this is a common hack, since with 
+// raytracing you don't have diffuse-diffuse reflections)
+		
+translate( 6, -2, 1,
+	scale(2, 2, 2, 
+		subtraction (
+			translate(0, -0.5, 0, 
+				cylinder { 
+				material = { 
+					diffuse = (0.8,0.3,0.1);
+					specular = (0.9,0.4,0.0);
+					shininess = 0.6;
+				}
+		}
+			),
+			translate(0, 0.5, 0, 
+				box { 
+				material = { 
+					diffuse = (0.8,0.3,0.1);
+					specular = (0.9,0.4,0.0);
+					shininess = 0.6;
+				}
+		}
+			)
+		) ))
