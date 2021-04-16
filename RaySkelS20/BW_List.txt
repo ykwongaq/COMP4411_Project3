@@ -1,22 +1,71 @@
-W adaptive termination				yes/no
-W antialiasing by supersampling			yes/no
-+W jittering					yes/no
-B spot lights					yes/no
-B background image				yes/no
-B accelerate shadow atteuation			yes/no
-B overlapping tranparent objects		yes/no
-BW texture mapping (diffuse and transparent)	yes/no
-BW antialiasing by adaptive supersampling	yes/no
-BW Warn model					yes/no
-2B bump mapping					yes/no
-2B solid/procedural texture			yes/no
-2B new geometry (quadrics)			yes/no
-2B height fields				yes/no
-2B first 					yes/no
-1.5B next for each Dof, soft shadows, 		yes/no [corrected 04/16/21]
-     motion blur, glossy reflection		yes/no
-3B high lever geometry (e.g. metaballs)		yes/no
-3B ray-intersection optimization		yes/no
-4B realistic shading model			yes/no
-4B CSG						yes/no
-4B caustics					yes/no
+------------------------------------------------------------------
+W adaptive termination				yes
+1. Please load the simpleSamples/sphere_refract.ray file.
+2. Set Depth to be 2
+3. Set Threshold to be 1.0 so that the effect is obvious
+4. Render the scene
+5. Originally, when the depth is 2, the sphere should be transparent. However, after adding adaptive termination, the refraction is stopped.
+------------------------------------------------------------------
+W antialiasing by supersampling			yes
+1. Set the super sample slider to be any value other than 0.
+2. Load arbitrary .ray file to see the effect.
+3. It is recommended to chose one or two as choosing five is a little bit slow
+------------------------------------------------------------------
++W jittering					yes
+1. Repeat the step on super sampling
+2. Set the Jittering button on
+------------------------------------------------------------------
+B spot lights					yes
+1. Load the bonus/spotlight.ray file
+------------------------------------------------------------------
+B background image				yes
+1. Load arbitrary .ray file
+2. Click the file button in the menu bar and click the Load Background button
+3. Load bonus_bmp/earth.bmp for background (or any other files in the same folder)
+4. Click the background button
+5. Render the scene
+------------------------------------------------------------------
+B accelerate shadow atteuation			no
+------------------------------------------------------------------
+B overlapping tranparent objects		yes
+1. Load the bonus/refra_overlapping.ray file
+2. Set the depth to be 4 (You may need to wait for a while)
+------------------------------------------------------------------
+BW texture mapping (diffuse and transparent)	yes
+1. Load bonus/sphere.ray file for scene
+2. Click the file button in the menu bar and click the load Texture image button
+3. Load bonus_bmp/earth.bmp file for texture (or any other files in the same folder)
+4. Click the texture button
+5. Render the scene
+------------------------------------------------------------------
+BW antialiasing by adaptive supersampling	no
+------------------------------------------------------------------
+BW Warn model					yes
+1. Load the bonus/shapeLight.ray file
+------------------------------------------------------------------
+2B bump mapping					no
+------------------------------------------------------------------
+2B solid/procedural texture			no
+------------------------------------------------------------------
+2B new geometry (quadrics)			yes
+1. Load the bonus/torus.ray file
+------------------------------------------------------------------
+2B height fields				no
+------------------------------------------------------------------
+2B first 					no
+1.5B next for each Dof, soft shadows, 		no [corrected 04/16/21]
+     motion blur, glossy reflection		no
+------------------------------------------------------------------
+3B high lever geometry (e.g. metaballs)		no
+------------------------------------------------------------------
+3B ray-intersection optimization		no
+------------------------------------------------------------------
+4B realistic shading model			no
+------------------------------------------------------------------
+4B CSG						yes
+1. Load bonus/csg.ray file
+- In the scene, you will see, at the middle, two object that involving in the operation
+- You will also see the result of the operation at the lift
+- Due to time limit, only subtraction is implemented.
+------------------------------------------------------------------
+4B caustics					no
