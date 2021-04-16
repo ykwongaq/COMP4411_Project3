@@ -44,6 +44,7 @@ public:
 	//Added 
 	Fl_Check_Button*	m_adaptiveCheckButton;
 	Fl_Check_Button* m_jitteringCheckButton;
+	Fl_Check_Button* m_backgroundCheckButton;
 
 	TraceGLWindow*		m_traceGlWindow;
 
@@ -69,13 +70,13 @@ private:
 
 	int			m_nSize;
 	int			m_nDepth;
-	float		m_nAtteunConstant;
-	float		m_nAtteunLinear;
-	float		m_nAtteunQuadric;
-	float		m_nAmbientLight;
-	float		m_nThreshold;
-	bool		m_nJittering;
-	int			m_nSuperSample;
+	float m_nAtteunConstant;
+	float m_nAtteunLinear;
+	float m_nAtteunQuadric;
+	float m_nAmbientLight;
+	float m_nThreshold;
+	bool m_nJittering = false;
+	bool m_nbackground = false;
 
 // static class members
 	static Fl_Menu_Item menuitems[];
@@ -84,6 +85,7 @@ private:
 
 	static void cb_load_scene(Fl_Menu_* o, void* v);
 	static void cb_save_image(Fl_Menu_* o, void* v);
+	static void cb_load_background(Fl_Menu_* o, void* v);
 	static void cb_exit(Fl_Menu_* o, void* v);
 	static void cb_about(Fl_Menu_* o, void* v);
 
@@ -99,6 +101,8 @@ private:
 	static void cb_superSampleSliders(Fl_Widget *o, void *v);
 	static void cd_jitteringLightButton(Fl_Widget* o, void* v);
 	
+	static void cd_BackgroundButton(Fl_Widget* o, void* v);
+
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);
