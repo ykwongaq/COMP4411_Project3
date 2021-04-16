@@ -75,6 +75,7 @@ private:
 	float m_nAtteunQuadric;
 	float m_nAmbientLight;
 	float m_nThreshold;
+	int m_nSuperSample;
 	bool m_nJittering = false;
 	bool m_nbackground = false;
 

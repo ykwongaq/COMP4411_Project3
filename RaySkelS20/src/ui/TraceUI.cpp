@@ -417,11 +417,7 @@ TraceUI::TraceUI() {
 		m_stopButton->user_data((void*)(this));
 		m_stopButton->callback(cb_stop);
 
-		
-
-		
-
-		m_backgroundCheckButton = new Fl_Check_Button(220, 210, 70, 25, "Background");
+		m_backgroundCheckButton = new Fl_Check_Button(220, 230, 70, 25, "Background");
 		m_backgroundCheckButton->user_data((void*)(this));
 		m_backgroundCheckButton->value(m_nbackground);
 		m_backgroundCheckButton->callback(cd_BackgroundButton);
