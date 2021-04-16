@@ -256,7 +256,7 @@ void RayTracer::loadtextureMappingImage(char* fn) {
 	data = readBMP(fn, texture_width, texture_height);
 	if (data)
 	{
-		if (textureMappingImage)
+		if (!textureMappingImage)
 		{
 			delete[]textureMappingImage;
 		}

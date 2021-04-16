@@ -111,7 +111,7 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 	vec3f p			= P + dir * RAY_EPSILON;	// Offset the point a little bit to prevent intersection with itself
 
 	// Check will the light ray hit the intersection point
-	while (result[0] > NORMAL_EPSILON && result[1] > NORMAL_EPSILON && !result[2] > NORMAL_EPSILON) {
+	while (result[0] > NORMAL_EPSILON || result[1] > NORMAL_EPSILON || result[2] > NORMAL_EPSILON) {
 		isect i;
 		ray shadow_ray(p, dir);
 
@@ -119,11 +119,6 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 		if (!this->scene->intersect(shadow_ray, i) || i.t >= t) {
 			// No blocking object in between OR the intersection point is behind the light
 			return result;
-		}
-
-		if (i.getMaterial().kt.iszero()) {
-			// Totally non-transparent object
-			return vec3f(0.0f, 0.0f, 0.0f);
 		}
 
 		result = prod(result, i.getMaterial().kt);
@@ -172,7 +167,7 @@ vec3f SpotLight::shadowAttenuation(const vec3f &P) const {
 	vec3f p = P + dir * RAY_EPSILON;	// Offset the point a little bit to prevent intersection with itself
 
 	// Check will the light ray hit the intersection point
-	while (result[0] > NORMAL_EPSILON && result[1] > NORMAL_EPSILON && !result[2] > NORMAL_EPSILON) {
+	while (result[0] >= NORMAL_EPSILON && result[1] >= NORMAL_EPSILON && result[2] >= NORMAL_EPSILON) {
 		isect i;
 		ray shadow_ray(p, dir);
 
